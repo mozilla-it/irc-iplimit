@@ -10,4 +10,4 @@ When completed and deployed, it will be protected behind an LDAP login screen.
 
 Still pretty bare bones at the moment.
 
-![Screenshot of iplimit in action](/mozilla/irc-iplimit/screenshot.png?raw=true "iplimit in action")
+![Screenshot of iplimit in action](/screenshot.png?raw=true "iplimit in action")
