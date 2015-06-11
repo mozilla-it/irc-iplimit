@@ -7,7 +7,6 @@ from netaddr import IPNetwork, IPAddress, core
 import time
 import datetime
 import json
-import collections
 import ConfigParser
 import optparse
 import sys
