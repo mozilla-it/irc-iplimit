@@ -20,6 +20,7 @@ import optparse
 
 #JSON_URL="http://127.0.0.1:5000/json"
 #EXISTING_EXCEPTIONS="/Users/dan/sysadmins/puppet/trunk/modules/inspircd/files/global/connect.conf"
+IPLIMIT_PROTO="1.0"
 
 def process_arguments():
     usage = """%prog v0.1
@@ -84,7 +85,15 @@ def main():
         return -1
     req = urllib2.urlopen(options.url)
     blob = req.read()
-    exceptions = json.loads(blob)
+    try:
+        version = json.loads(blob)[:1][0]['iplimit_proto']
+    except:
+        print "Protocol mismatch with server. (iplimit_proto not found)"
+        return -1
+    if IPLIMIT_PROTO != version:
+        print "Protocol mismatch with server. (%s != %s)" % (IPLIMIT_PROTO, version)
+        return -1
+    exceptions = json.loads(blob)[1:]
     existing_exceptions = loadExistingExceptions(options.existing)
     for exception in exceptions:
         try:

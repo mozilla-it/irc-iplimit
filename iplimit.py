@@ -18,6 +18,8 @@ TIMEZONE = "GMT %s" % (0 - time.timezone / 60 / 60)
 
 app = Flask(__name__)
 
+IPLIMIT_PROTO="1.0"
+
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = ''
 app.config['MYSQL_DATABASE_DB'] = 'iplimit'
@@ -74,7 +76,7 @@ def dumpJSON():
     cursor.execute("""SELECT * FROM Exception WHERE ExpirationDate > NOW()""")
     rows = cursor.fetchall()
     exceptions = []
-    exceptions.append({'iplimit_proto':'1.0'})
+    exceptions.append({'iplimit_proto':IPLIMIT_PROTO})
     for row in rows:
         t = {}
         t["ExceptionIP"] = str(row[0])
