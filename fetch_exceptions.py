@@ -77,7 +77,7 @@ def exceptionExists(ip, existing_exceptions):
 def main():
     options = process_arguments()
     if not options.url:
-        print "--url is a required parameter. run with --help for details."
+        print "--iplimit-url is a required parameter. run with --help for details."
         return -1
     if not options.existing:
         print "--existing-exceptions is a required parameter. run with --help for details."

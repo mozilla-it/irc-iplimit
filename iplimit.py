@@ -74,6 +74,7 @@ def dumpJSON():
     cursor.execute("""SELECT * FROM Exception WHERE ExpirationDate > NOW()""")
     rows = cursor.fetchall()
     exceptions = []
+    exceptions.append({'iplimit_proto':'1.0'})
     for row in rows:
         t = {}
         t["ExceptionIP"] = str(row[0])
