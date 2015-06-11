@@ -3,6 +3,7 @@ CREATE TABLE `Exception` (
   `CreationDate` datetime NOT NULL,
   `ExpirationDate` datetime NOT NULL,
   `Requestor` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`ExceptionIP`)
+  PRIMARY KEY (`ExceptionIP`),
+  KEY (`ExpirationDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
