@@ -111,5 +111,5 @@ if __name__ == '__main__':
         print "--config is a required parameter."
         sys.exit(-1)
     load_config(options.config)
-    app.debug = True
+    #app.debug = True
     app.run()
