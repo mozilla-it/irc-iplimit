@@ -36,6 +36,9 @@ def validIP(ip):
 def create_exception():
     # get source IP address. this may need to change depending on how the app is hosted
     ip = request.remote_addr
+
+    # get requestor username from http auth
+    remote_user = request.remote_user
     if validIP(ip) is False:
         return "Invalid IP address: %s" % (ip)
 
@@ -49,7 +52,8 @@ def create_exception():
         # this is a new exception
         creation = datetime.datetime.now()
         expiration = creation + datetime.timedelta(days=DEFAULT_EXCEPTION_LENGTH)
-        cursor.execute("""INSERT INTO Exception VALUES (%s, %s, %s)""", (ip, creation, expiration))
+        cursor.execute("""INSERT INTO Exception (ExceptionIP, CreationDate, ExpirationDate, Requestor) VALUES (%s, %s, %s, %s)""",
+            (ip, creation, expiration, remote_user))
         conn.commit()
         return "A new exception has been created for IP address %s. It will expire on %s %s. It will take effect within 5 minutes." % (ip, expiration.strftime(DFORMATTER), TIMEZONE)
     else:
