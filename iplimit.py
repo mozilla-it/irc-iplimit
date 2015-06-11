@@ -8,6 +8,10 @@ import time
 import datetime
 import json
 import collections
+import ConfigParser
+import optparse
+import sys
+import os
 
 # in days
 DEFAULT_EXCEPTION_LENGTH=2
@@ -20,12 +24,21 @@ app = Flask(__name__)
 
 IPLIMIT_PROTO="1.0"
 
-app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = ''
-app.config['MYSQL_DATABASE_DB'] = 'iplimit'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
-
 mysql.init_app(app)
+
+def load_config(config_file):
+    if not os.path.exists(config_file):
+        print "ERROR: Config file %s not found." % config_file
+        sys.exit(-1)
+    config = ConfigParser.RawConfigParser()
+    config.read(config_file)
+    if 'global' not in config.sections():
+        print "ERROR: [global] section not found in %s." % config_file
+        sys.exit(-1)
+    app.config['MYSQL_DATABASE_USER'] = config.get('global', 'mysql_user')
+    app.config['MYSQL_DATABASE_PASSWORD'] = config.get('global', 'mysql_password')
+    app.config['MYSQL_DATABASE_DB'] = config.get('global', 'mysql_database')
+    app.config['MYSQL_DATABASE_HOST'] = config.get('global', 'mysql_server')
 
 def validIP(ip):
     try:
@@ -33,6 +46,13 @@ def validIP(ip):
     except:
         return False
     return True
+
+def process_arguments():
+    parser = optparse.OptionParser(version="%prog 0.1")
+    parser.set_usage("iplimit.py wsgi")
+    parser.add_option('--config', dest='config', default='./iplimit.conf', help='Configuration file (required) (default: ./iplimit.conf)')
+    (options, args) = parser.parse_args()
+    return options
 
 @app.route('/')
 def create_exception():
@@ -83,11 +103,13 @@ def dumpJSON():
         t["CreationDate"] = row[1].strftime(DFORMATTER)
         t["ExpirationDate"] = row[2].strftime(DFORMATTER)
         exceptions.append(t)
-        print t
     return json.dumps(exceptions)
 
-
-
 if __name__ == '__main__':
+    options = process_arguments()
+    if not options.config:
+        print "--config is a required parameter."
+        sys.exit(-1)
+    load_config(options.config)
     app.debug = True
     app.run()
