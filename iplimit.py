@@ -51,6 +51,7 @@ def process_arguments():
     parser = optparse.OptionParser(version="%prog 0.1")
     parser.set_usage("iplimit.py wsgi")
     parser.add_option('--config', dest='config', default='./iplimit.conf', help='Configuration file (required) (default: ./iplimit.conf)')
+    parser.add_option('--debug', dest='debug', default=False, action="store_true", help="Enable Flask debug mode.")
     (options, args) = parser.parse_args()
     return options
 
@@ -111,5 +112,7 @@ if __name__ == '__main__':
         print "--config is a required parameter."
         sys.exit(-1)
     load_config(options.config)
-    #app.debug = True
+    if options.debug:
+        print "Debug mode enabled!"
+        app.debug = True
     app.run()
