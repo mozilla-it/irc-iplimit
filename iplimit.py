@@ -3,7 +3,7 @@
 from flask import Flask
 from flask import request
 from flaskext.mysql import MySQL
-from ipvalidate import is_valid_ipv4
+from netaddr import IPNetwork, IPAddress, core
 import time
 import datetime
 import json
@@ -25,11 +25,18 @@ app.config['MYSQL_DATABASE_HOST'] = 'localhost'
 
 mysql.init_app(app)
 
+def validIP(ip):
+    try:
+        x = IPAddress(ip)
+    except:
+        return False
+    return True
+
 @app.route('/')
 def create_exception():
     # get source IP address. this may need to change depending on how the app is hosted
     ip = request.remote_addr
-    if is_valid_ipv4.is_valid_ipv4(ip) is False:
+    if validIP(ip) is False:
         return "Invalid IP address: %s" % (ip)
 
     conn = mysql.connect()
@@ -49,7 +56,7 @@ def create_exception():
         # this is an existing exception, so update the expiration datetime
         existing_ip = data[0]
         original_expiration_date = data[1]
-        if is_valid_ipv4.is_valid_ipv4(existing_ip) is False:
+        if validIP(existing_ip) is False:
             return "Invalid IP address: %s" % (existing_ip)
         expiration = datetime.datetime.now() + datetime.timedelta(days=DEFAULT_EXCEPTION_LENGTH)
         cursor.execute("""UPDATE Exception SET ExpirationDate=%s WHERE ExceptionIP=%s""", (expiration, ip,))
