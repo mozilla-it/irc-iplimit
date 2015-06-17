@@ -19,7 +19,7 @@ import sys
 import os
 
 # in days
-DEFAULT_EXCEPTION_LENGTH=2
+DEFAULT_EXCEPTION_LENGTH=7
 
 mysql = MySQL()
 DFORMATTER = "%Y-%m-%d %H:%M:%S"
@@ -83,7 +83,7 @@ def create_exception():
         cursor.execute("""INSERT INTO Exception (ExceptionIP, CreationDate, ExpirationDate, Requestor) VALUES (%s, %s, %s, %s)""",
             (ip, creation, expiration, remote_user))
         conn.commit()
-        return "A new exception has been created for IP address %s. It will expire on %s %s. It will take effect within 5 minutes." % (ip, expiration.strftime(DFORMATTER), TIMEZONE)
+        return "A new exception has been created for IP address %s. It will expire on %s %s. It will take effect within 1 minute." % (ip, expiration.strftime(DFORMATTER), TIMEZONE)
     else:
         # this is an existing exception, so update the expiration datetime
         existing_ip = data[0]
@@ -93,7 +93,7 @@ def create_exception():
         expiration = datetime.datetime.now() + datetime.timedelta(days=DEFAULT_EXCEPTION_LENGTH)
         cursor.execute("""UPDATE Exception SET ExpirationDate=%s WHERE ExceptionIP=%s""", (expiration, ip,))
         conn.commit()
-        return "Your existing exception for IP address %s has been updated to expire on %s %s. This change will take effect within 5 minutes." % (ip, expiration.strftime(DFORMATTER), TIMEZONE)
+        return "Your existing exception for IP address %s has been updated to expire on %s %s. This change will take effect within 1 minute." % (ip, expiration.strftime(DFORMATTER), TIMEZONE)
 
 @app.route('/json')
 def dumpJSON():
