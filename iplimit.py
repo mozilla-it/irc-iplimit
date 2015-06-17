@@ -91,7 +91,7 @@ def create_exception():
         if validIP(existing_ip) is False:
             return "Invalid IP address: %s" % (existing_ip)
         expiration = datetime.datetime.now() + datetime.timedelta(days=DEFAULT_EXCEPTION_LENGTH)
-        cursor.execute("""UPDATE Exception SET ExpirationDate=%s WHERE ExceptionIP=%s""", (expiration, ip,))
+        cursor.execute("""UPDATE Exception SET ExpirationDate=%s, Requestor=%s WHERE ExceptionIP=%s""", (expiration, remote_user, ip,))
         conn.commit()
         return "Your existing exception for IP address %s has been updated to expire on %s %s. This change will take effect within 1 minute." % (ip, expiration.strftime(DFORMATTER), TIMEZONE)
 
