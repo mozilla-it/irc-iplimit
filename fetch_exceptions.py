@@ -20,11 +20,25 @@ import re
 from netaddr import IPNetwork, IPAddress, core
 import datetime
 import optparse
+import ConfigParser
+import os
+import base64
 
-
-#JSON_URL="http://127.0.0.1:5000/json"
-#EXISTING_EXCEPTIONS="/Users/dan/sysadmins/puppet/trunk/modules/inspircd/files/global/connect.conf"
 IPLIMIT_PROTO="1.0"
+
+_config = {}
+
+def load_config(config_file):
+    global _config
+    if not os.path.exists(config_file):
+        print "ERROR: Config file %s not found." % config_file
+        sys.exit(-1)
+    config = ConfigParser.RawConfigParser()
+    config.read(config_file)
+    if 'global' not in config.sections():
+        print "ERROR: [global] section not found in %s." % config_file
+        sys.exit(-1)
+    _config = config
 
 def process_arguments():
     usage = """%prog v0.1
@@ -38,10 +52,7 @@ def process_arguments():
     """
     parser = optparse.OptionParser(version="%prog 0.1")
     parser.set_usage(usage)
-    parser.add_option('--iplimit-url', dest="url", help='iplimit JSON URL (required)')
-    parser.add_option('--existing-exceptions', dest='existing', help='Existing exceptions, in inspircd config format (required). Exceptions fetched via iplimit API are checked against this file and skipped if matched.')
-    parser.add_option('--limit', dest='limit', default=100, help='Connection limit (default: 100)')
-    parser.add_option('--out', dest="out", help="File to write inspircd config to (If omitted: stdout)")
+    parser.add_option('-f', dest="config_file", help="config file (required)")
     (options, args) = parser.parse_args()
     return options
 
@@ -81,13 +92,18 @@ def exceptionExists(ip, existing_exceptions):
 
 def main():
     options = process_arguments()
-    if not options.url:
-        print "--iplimit-url is a required parameter. run with --help for details."
+    if not options.config_file:
+        print "-f is a required parameter. run with --help for details."
         return -1
-    if not options.existing:
-        print "--existing-exceptions is a required parameter. run with --help for details."
-        return -1
-    req = urllib2.urlopen(options.url)
+    load_config(options.config_file)
+
+    request = urllib2.Request(_config.get('global', 'iplimiturl'))
+    user = _config.get('global', 'http_username')
+    passwd = _config.get('global', 'http_password')
+    b64str = base64.encodestring('%s:%s' % (user, passwd)).replace('\n', '')
+    request.add_header("Authorization", "Basic %s" % b64str)
+
+    req = urllib2.urlopen(request)
     blob = req.read()
     try:
         version = json.loads(blob)[:1][0]['iplimit_proto']
@@ -98,7 +114,7 @@ def main():
         print "Protocol mismatch with server. (%s != %s)" % (IPLIMIT_PROTO, version)
         return -1
     exceptions = json.loads(blob)[1:]
-    existing_exceptions = loadExistingExceptions(options.existing)
+    existing_exceptions = loadExistingExceptions(_config.get('global', 'existing_exceptions'))
     for exception in exceptions:
         try:
             ip = IPAddress(exception["ExceptionIP"])
@@ -110,7 +126,9 @@ def main():
         # Does this exception already exist elsewhere in inspircd's config? If so, skip it
         if not exceptionExists(exception["ExceptionIP"], existing_exceptions):
             print "# iplimit.irc.mozilla.org exception. Created: %s. Expires: %s." % (creation, expiration)
-            print '<connect parent="main" allow="%s" localmax="%s" globalmax="%s" limit="%s" modes="+x">\n' % (ip, options.limit, options.limit, int(options.limit) + 1)
+            limit = _config.get('global', 'limit')
+            print '<connect parent="main" allow="%s" localmax="%s" globalmax="%s" limit="%s" modes="+x">\n' % \
+                (ip, limit, limit, int(limit) + 1)
 
 if __name__ == '__main__':
     main()
