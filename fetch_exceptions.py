@@ -63,7 +63,7 @@ def loadExistingExceptions(existing_file):
     quoted = re.compile(r'"(.*?)"')
     ips = []
     for line in existings.split('\n'):
-        if 'main" allow="' in line:
+        if ('main" allow="' in line) and (':' not in line): # if it has a :, it's ipv6, ignore it, this app doesn't support ipv6
             value = re.findall(quoted, line.split(" ")[2])[0]
             # in inspircd config, you can specify 192.168.0.* or 192.168.0.0/24
             # but python IP libraries only understand slash notiation
@@ -71,7 +71,7 @@ def loadExistingExceptions(existing_file):
             pass1 = re.sub(r'\*', '0/24', value)
 
             # if it ends in .0, add /24 (yes, I know this is kind of guessing)
-            pass2 = re.sub(r'.0$', '.0/24', pass1)
+            pass2 = re.sub(r'\.0$', '.0/24', pass1)
 
             # if there is no /, assume it's a single IP, and add /32
             if '/' not in pass2:
@@ -83,7 +83,6 @@ def loadExistingExceptions(existing_file):
 def exceptionExists(ip, existing_exceptions):
     for existing in existing_exceptions:
         try:
-            #print "IP: %s, Network: %s" % (ip, existing)
             if IPAddress(ip) in IPNetwork(existing):
                 return True
         except core.AddrFormatError:
