@@ -112,8 +112,11 @@ def main():
     if IPLIMIT_PROTO != version:
         print "Protocol mismatch with server. (%s != %s)" % (IPLIMIT_PROTO, version)
         return -1
-    exceptions = json.loads(blob)[1:]
+    tmpjson = json.loads(blob)
+    exceptions = tmpjson[1:]
+    banner = tmpjson[0]
     existing_exceptions = loadExistingExceptions(_config.get('global', 'existing_exceptions'))
+    print "# iplimit_proto: %s" % banner["iplimit_proto"]
     for exception in exceptions:
         try:
             ip = IPAddress(exception["ExceptionIP"])
