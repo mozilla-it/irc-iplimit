@@ -11,6 +11,7 @@ class { 'mysql::bindings':
 
 # pip install requirements
 python::requirements { "/var/www/${project_name}/requirements.txt":
+  forceupdate => true,
   require => [
     Class['python'],
     Class['mysql::bindings'],
