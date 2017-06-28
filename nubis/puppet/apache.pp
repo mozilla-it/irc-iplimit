@@ -17,6 +17,18 @@ apache::vhost { $project_name:
       'Remote_Addr 127\.0\.0\.1 internal',
       'Remote_Addr ^10\. internal',
     ],
+
+    wsgi_process_group   => $project_name,
+    wsgi_script_aliases  => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
+    wsgi_daemon_process_options => {
+      processes => 1,
+      threads   => 1,
+      maximum-requests => 200,
+      display-name => $project_name,
+      python-path => "/var/www/${project_name}",
+      home => "/var/www/${project_name}",
+    },
+
     access_log_env_var => '!internal',
     access_log_format  => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
     custom_fragment    => "
