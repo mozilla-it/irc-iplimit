@@ -1,6 +1,6 @@
 [template]
-src = "iplimit.tmpl"
-dest = "/etc/iplimit.htpasswd"
+src = "iplimit-passwd.tmpl"
+dest = "/etc/irc-iplimit.htpasswd"
 prefix = "/%%PROJECT%%-%%ENVIRONMENT%%/%%ENVIRONMENT%%"
 
 keys = [
