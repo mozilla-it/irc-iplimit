@@ -1,0 +1,10 @@
+[template]
+src = "iplimit-sp.cert.tmpl"
+dest = "/etc/irc-iplimit/sp.cert"
+prefix = "/%%PROJECT%%-%%ENVIRONMENT%%/%%ENVIRONMENT%%"
+
+keys = [
+    "/config"
+]
+
+reload_cmd = "/etc/init.d/apache2 restart"

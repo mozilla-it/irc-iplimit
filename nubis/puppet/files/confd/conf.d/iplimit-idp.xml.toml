@@ -1,0 +1,10 @@
+[template]
+src = "iplimit-idp.xml.tmpl"
+dest = "/etc/irc-iplimit/idp.xml"
+prefix = "/%%PROJECT%%-%%ENVIRONMENT%%/%%ENVIRONMENT%%"
+
+keys = [
+    "/config"
+]
+
+reload_cmd = "/etc/init.d/apache2 restart"

@@ -4,6 +4,11 @@ class { 'nubis_apache':
 # Add modules
 class { 'apache::mod::rewrite': }
 class { 'apache::mod::wsgi': }
+class { 'apache::mod::auth_mellon': }
+
+file { "/etc/${project_name}":
+  ensure => directory,
+}
 
 apache::vhost { $project_name:
     port               => 80,
@@ -32,7 +37,35 @@ apache::vhost { $project_name:
 
     directories => [
       {
+        path => '/',
+        provider => 'location',
+        mellon_endpoint_path => '/mellon',
+
+        mellon_sp_private_key_file => "/etc/${project_name}/sp.key",
+        mellon_sp_cert_file => "/etc/${project_name}/sp.cert",
+        mellon_sp_metadata_file => "/etc/${project_name}/sp.xml",
+        mellon_idp_metadata_file => "/etc/${project_name}/idp.xml",
+
+        #XXX: Module doesn't support these yet
+        custom_fragment => "
+          MellonSecureCookie On
+          MellonSubjectConfirmationDataAddressCheck Off
+        ",
+      },
+      {
+        path => '/mellon',
+        provider => 'location',
+      },
+      {
+        path => '/',
+        provider => 'location',
+        mellon_enable => 'auth',
+        auth_type     => 'Mellon',
+        auth_require  => 'valid-user',
+      },
+      {
         path => '/json',
+        provider => 'location',
         auth_name    => 'Secret',
         auth_type    => 'Basic',
         auth_require => 'user json',
