@@ -37,7 +37,7 @@ apache::vhost { $project_name:
     aliases => [
       {
         alias            => '/health',
-        path             => '/etc/motd',
+        path             => '/etc/issue',
       },
 
     directories => [
