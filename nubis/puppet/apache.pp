@@ -23,9 +23,8 @@ apache::vhost { $project_name:
       'Remote_Addr ^10\. internal',
     ],
 
-    wsgi_process_group => $project_name,
-    wsgi_daemon_process => $project_name,
-    wsgi_script_aliases => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
+    wsgi_process_group   => $project_name,
+    wsgi_script_aliases  => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
     wsgi_daemon_process_options => {
       processes => 1,
       threads   => 1,
@@ -48,7 +47,10 @@ apache::vhost { $project_name:
 
         mellon_enable => 'auth',
         mellon_endpoint_path => '/mellon',
-
+        
+        auth_type     => 'Mellon',
+        auth_require  => 'valid-user',
+        
         mellon_sp_private_key_file => "/etc/${project_name}/sp.key",
         mellon_sp_cert_file => "/etc/${project_name}/sp.cert",
         mellon_sp_metadata_file => "/etc/${project_name}/sp.xml",
@@ -63,21 +65,17 @@ apache::vhost { $project_name:
       {
         path => '/health',
         provider => 'location',
+        auth_type    => 'None',
+        mellon_enable => 'off',
       },
       {
         path => '/mellon',
         provider => 'location',
       },
       {
-        path => '/',
-        provider => 'location',
-        mellon_enable => 'auth',
-        auth_type     => 'Mellon',
-        auth_require  => 'valid-user',
-      },
-      {
         path => '/json',
         provider => 'location',
+        mellon_enable => 'off',
         auth_name    => 'Secret',
         auth_type    => 'Basic',
         auth_require => 'user json',
