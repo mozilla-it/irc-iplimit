@@ -34,10 +34,18 @@ apache::vhost { $project_name:
       home => "/var/www/${project_name}",
     },
 
+    aliases => [
+      {
+        alias            => '/health',
+        path             => '/etc/motd',
+      },
+
     directories => [
       {
         path => '/',
         provider => 'location',
+
+        mellon_enable => 'auth',
         mellon_endpoint_path => '/mellon',
 
         mellon_sp_private_key_file => "/etc/${project_name}/sp.key",
@@ -50,6 +58,10 @@ apache::vhost { $project_name:
           MellonSecureCookie On
           MellonSubjectConfirmationDataAddressCheck Off
         ",
+      },
+      {
+        path => '/health',
+        provider => 'location',
       },
       {
         path => '/mellon',
