@@ -1,0 +1,8 @@
+[template]
+src = "iplimit.tmpl"
+dest = "/etc/iplimit.htpasswd"
+prefix = "/%%PROJECT%%-%%ENVIRONMENT%%/%%ENVIRONMENT%%"
+
+keys = [
+    "/config"
+]
