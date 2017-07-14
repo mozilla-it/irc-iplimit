@@ -30,6 +30,16 @@ apache::vhost { $project_name:
       home => "/var/www/${project_name}",
     },
 
+    directories => [
+      {
+        path => '/json',
+        auth_name    => 'Secret',
+        auth_type    => 'Basic',
+        auth_require => 'user json',
+        auth_user_file => "/etc/${project_name}.htpasswd",
+      },
+    ],
+
     access_log_env_var => '!internal',
     access_log_format  => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
     custom_fragment    => "
