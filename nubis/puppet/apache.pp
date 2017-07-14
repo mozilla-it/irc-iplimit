@@ -23,8 +23,9 @@ apache::vhost { $project_name:
       'Remote_Addr ^10\. internal',
     ],
 
-    wsgi_process_group   => $project_name,
-    wsgi_script_aliases  => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
+    wsgi_process_group => $project_name,
+    wsgi_daemon_process => $project_name,
+    wsgi_script_aliases => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
     wsgi_daemon_process_options => {
       processes => 1,
       threads   => 1,
