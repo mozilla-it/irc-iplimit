@@ -41,7 +41,8 @@ apache::vhost { $project_name:
       {
         alias            => '/health',
         path             => '/var/run/motd.dynamic',
-      },
+      }
+    ],
 
     directories => [
       {
