@@ -5,7 +5,7 @@
     ],
     "project_description": "irc-iplimit",
     "project_name": "irc-iplimit",
-    "project_version": "v0.0.1-dev_{{env `GIT_COMMIT_SHA`}}",
+    "project_version": "v1.5.0-dev_{{env `GIT_COMMIT_SHA`}}",
     "source_ami_project_version": "v1.5.0"
   }
 }
