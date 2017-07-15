@@ -6,8 +6,11 @@ class { 'apache::mod::rewrite': }
 class { 'apache::mod::wsgi': }
 class { 'apache::mod::auth_mellon': }
 
-file { "/etc/${project_name}":
+file { '/etc/apache2/mellon':
   ensure => directory,
+  owner  => root,
+  group  => root,
+  mode   => '0755',
 }
 
 apache::vhost { $project_name:
@@ -37,7 +40,7 @@ apache::vhost { $project_name:
     aliases => [
       {
         alias            => '/health',
-        path             => '/etc/issue',
+        path             => '/var/run/motd.dynamic',
       },
 
     directories => [
@@ -51,10 +54,10 @@ apache::vhost { $project_name:
         auth_type     => 'Mellon',
         auth_require  => 'valid-user',
         
-        mellon_sp_private_key_file => "/etc/${project_name}/sp.key",
-        mellon_sp_cert_file => "/etc/${project_name}/sp.cert",
-        mellon_sp_metadata_file => "/etc/${project_name}/sp.xml",
-        mellon_idp_metadata_file => "/etc/${project_name}/idp.xml",
+        mellon_sp_private_key_file => "/etc/apache2/mellon/okta.key",
+        mellon_sp_cert_file => "/etc/apache2/mellon/okta.cert",
+        mellon_sp_metadata_file => "/etc/apache2/mellon/okta.xml",
+        mellon_idp_metadata_file => "/etc/apache2/mellon/okta.idp-metadata.xml",
 
         #XXX: Module doesn't support these yet
         custom_fragment => "
@@ -71,6 +74,7 @@ apache::vhost { $project_name:
       {
         path => '/mellon',
         provider => 'location',
+	auth_type  => 'None',
       },
       {
         path => '/json',
