@@ -14,12 +14,18 @@ file { '/etc/apache2/mellon':
 }
 
 apache::vhost { $project_name:
+    servername                  => false,
     port                        => 80,
     default_vhost               => true,
     docroot                     => "/var/www/${project_name}",
     docroot_owner               => 'root',
     docroot_group               => 'root',
     block                       => ['scm'],
+
+    additional_includes         => [
+      "/etc/apache2/conf.d/servername.conf",
+    ],
+
     setenvif                    => [
       'X-Forwarded-Proto https HTTPS=on',
       'Remote_Addr 127\.0\.0\.1 internal',
