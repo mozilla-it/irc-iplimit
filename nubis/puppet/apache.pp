@@ -23,7 +23,7 @@ apache::vhost { $project_name:
     block                       => ['scm'],
 
     additional_includes         => [
-      "/etc/apache2/conf.d/servername.conf",
+      '/etc/apache2/conf.d/servername.conf',
     ],
 
     setenvif                    => [
