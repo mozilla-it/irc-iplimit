@@ -6,13 +6,13 @@ class { 'python':
 
 class { 'mysql::bindings':
     python_enable => true,
-    client_dev => true,
+    client_dev    => true,
 }
 
 # pip install requirements
 python::requirements { "/var/www/${project_name}/requirements.txt":
   forceupdate => true,
-  require => [
+  require     => [
     Class['python'],
     Class['mysql::bindings'],
   ]

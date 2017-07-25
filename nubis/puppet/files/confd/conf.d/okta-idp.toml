@@ -1,0 +1,11 @@
+[template]
+src = "okta-idp.tmpl"
+dest = "/etc/apache2/mellon/okta.idp-metadata.xml"
+prefix = "/%%STACK%%/%%ENVIRONMENT%%"
+
+keys = [
+    "/config/okta"
+]
+
+reload_cmd = "/usr/sbin/apachectl graceful"
+

@@ -1,0 +1,9 @@
+[template]
+src = "okta-cert.tmpl"
+dest = "/etc/apache2/mellon/okta.cert"
+prefix = "/%%STACK%%/%%ENVIRONMENT%%"
+keys = [
+    "/config/okta"
+]
+
+reload_cmd = "/usr/sbin/apachectl graceful"

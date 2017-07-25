@@ -6,80 +6,101 @@ class { 'apache::mod::rewrite': }
 class { 'apache::mod::wsgi': }
 class { 'apache::mod::auth_mellon': }
 
-file { "/etc/${project_name}":
+file { '/etc/apache2/mellon':
   ensure => directory,
+  owner  => root,
+  group  => root,
+  mode   => '0755',
 }
 
 apache::vhost { $project_name:
-    port               => 80,
-    default_vhost      => true,
-    docroot            => "/var/www/${project_name}",
-    docroot_owner      => 'root',
-    docroot_group      => 'root',
-    block              => ['scm'],
-    setenvif           => [
+    servername                  => false,
+    port                        => 80,
+    default_vhost               => true,
+    docroot                     => "/var/www/${project_name}",
+    docroot_owner               => 'root',
+    docroot_group               => 'root',
+    block                       => ['scm'],
+
+    additional_includes         => [
+      '/etc/apache2/conf.d/servername.conf',
+    ],
+
+    setenvif                    => [
       'X-Forwarded-Proto https HTTPS=on',
       'Remote_Addr 127\.0\.0\.1 internal',
       'Remote_Addr ^10\. internal',
     ],
 
-    wsgi_process_group => $project_name,
-    wsgi_daemon_process => $project_name,
-    wsgi_script_aliases => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
+    wsgi_process_group          => $project_name,
+    wsgi_script_aliases         => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
     wsgi_daemon_process_options => {
-      processes => 1,
-      threads   => 1,
+      processes        => 1,
+      threads          => 1,
       maximum-requests => 200,
-      display-name => $project_name,
-      python-path => "/var/www/${project_name}",
-      home => "/var/www/${project_name}",
+      display-name     => $project_name,
+      python-path      => "/var/www/${project_name}",
+      home             => "/var/www/${project_name}",
     },
 
-    directories => [
+    aliases                     => [
       {
-        path => '/',
-        provider => 'location',
-        mellon_endpoint_path => '/mellon',
+        alias => '/health',
+        path  => '/var/run/motd.dynamic',
+      }
+    ],
 
-        mellon_sp_private_key_file => "/etc/${project_name}/sp.key",
-        mellon_sp_cert_file => "/etc/${project_name}/sp.cert",
-        mellon_sp_metadata_file => "/etc/${project_name}/sp.xml",
-        mellon_idp_metadata_file => "/etc/${project_name}/idp.xml",
+    directories                 => [
+      {
+        path                       => '/',
+        provider                   => 'location',
+
+        mellon_enable              => 'auth',
+        mellon_endpoint_path       => '/mellon',
+
+        auth_type                  => 'Mellon',
+        auth_require               => 'valid-user',
+
+        mellon_sp_private_key_file => '/etc/apache2/mellon/okta.key',
+        mellon_sp_cert_file        => '/etc/apache2/mellon/okta.cert',
+        mellon_sp_metadata_file    => '/etc/apache2/mellon/okta.xml',
+        mellon_idp_metadata_file   => '/etc/apache2/mellon/okta.idp-metadata.xml',
 
         #XXX: Module doesn't support these yet
-        custom_fragment => "
+        custom_fragment            => "
           MellonSecureCookie On
           MellonSubjectConfirmationDataAddressCheck Off
         ",
       },
       {
-        path => '/mellon',
-        provider => 'location',
+        path          => '/health',
+        provider      => 'location',
+        auth_type     => 'None',
+        mellon_enable => 'off',
       },
       {
-        path => '/',
+        path     => '/mellon',
         provider => 'location',
-        mellon_enable => 'auth',
-        auth_type     => 'Mellon',
-        auth_require  => 'valid-user',
+  auth_type      => 'None',
       },
       {
-        path => '/json',
-        provider => 'location',
-        auth_name    => 'Secret',
-        auth_type    => 'Basic',
-        auth_require => 'user json',
+        path           => '/json',
+        provider       => 'location',
+        mellon_enable  => 'off',
+        auth_name      => 'Secret',
+        auth_type      => 'Basic',
+        auth_require   => 'user json',
         auth_user_file => "/etc/${project_name}.htpasswd",
       },
     ],
 
-    access_log_env_var => '!internal',
-    access_log_format  => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
-    custom_fragment    => "
+    access_log_env_var          => '!internal',
+    access_log_format           => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
+    custom_fragment             => "
     # Don't set default expiry on anything
     ExpiresActive Off
 ",
-    headers            => [
+    headers                     => [
       # Nubis headers
       "set X-Nubis-Version ${project_version}",
       "set X-Nubis-Project ${project_name}",
@@ -91,7 +112,7 @@ apache::vhost { $project_name:
       'set X-Frame-Options "DENY"',
       'set Strict-Transport-Security "max-age=31536000"',
     ],
-    rewrites           => [
+    rewrites                    => [
       {
         comment      => 'HTTPS redirect',
         rewrite_cond => ['%{HTTP:X-Forwarded-Proto} =http'],
