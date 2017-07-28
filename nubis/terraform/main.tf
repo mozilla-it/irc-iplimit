@@ -11,6 +11,7 @@ module "worker" {
   ssh_key_name      = "${var.ssh_key_name}"
   nubis_sudo_groups = "${var.nubis_sudo_groups}"
   nubis_user_groups = "${var.nubis_user_groups}"
+  wait_for_capacity_timeout = "20m"
 }
 
 module "database" {
