@@ -3,21 +3,21 @@
     {
       "type": "shell",
       "inline": [
-        "sudo mkdir -p -m 755 /var/www/irc-iplimit",
-        "sudo chown ubuntu:ubuntu /var/www/irc-iplimit"
+        "sudo mkdir -p -m 755 /var/www/iplimit",
+        "sudo chown ubuntu:ubuntu /var/www/iplimit"
       ],
       "order": "1"
     },
     {
       "type": "file",
       "source": "./",
-      "destination": "/var/www/irc-iplimit",
+      "destination": "/var/www/iplimit",
       "order": "2"
     },
     {
       "type": "shell",
       "inline": [
-        "sudo chown -R root:root /var/www/irc-iplimit"
+        "sudo chown -R root:root /var/www/iplimit"
       ],
       "order": "3"
     }

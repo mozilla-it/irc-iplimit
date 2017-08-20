@@ -1,6 +1,6 @@
 [template]
 src = "iplimit.tmpl"
-dest = "/var/www/irc-iplimit/iplimit.conf"
+dest = "/var/www/iplimit/iplimit.conf"
 prefix = "/%%PROJECT%%-%%ENVIRONMENT%%/%%ENVIRONMENT%%"
 
 keys = [
