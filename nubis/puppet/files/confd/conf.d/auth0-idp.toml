@@ -1,10 +1,10 @@
 [template]
-src = "okta-key.tmpl"
-dest = "/etc/apache2/mellon/okta.key"
+src = "auth0-idp.tmpl"
+dest = "/etc/apache2/mellon/auth0.idp-metadata.xml"
 prefix = "/%%STACK%%/%%ENVIRONMENT%%"
 
 keys = [
-    "/config/okta"
+    "/config/auth0"
 ]
 
 reload_cmd = "/usr/sbin/apachectl graceful"

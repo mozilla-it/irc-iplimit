@@ -61,10 +61,10 @@ apache::vhost { $project_name:
         auth_type                  => 'Mellon',
         auth_require               => 'valid-user',
 
-        mellon_sp_private_key_file => '/etc/apache2/mellon/okta.key',
-        mellon_sp_cert_file        => '/etc/apache2/mellon/okta.cert',
-        mellon_sp_metadata_file    => '/etc/apache2/mellon/okta.xml',
-        mellon_idp_metadata_file   => '/etc/apache2/mellon/okta.idp-metadata.xml',
+        mellon_sp_private_key_file => '/etc/apache2/mellon/auth0.key',
+        mellon_sp_cert_file        => '/etc/apache2/mellon/auth0.cert',
+        mellon_sp_metadata_file    => '/etc/apache2/mellon/auth0.xml',
+        mellon_idp_metadata_file   => '/etc/apache2/mellon/auth0.idp-metadata.xml',
 
         #XXX: Module doesn't support these yet
         custom_fragment            => "

@@ -1,10 +1,9 @@
 [template]
-src = "okta-xml.tmpl"
-dest = "/etc/apache2/mellon/okta.xml"
+src = "auth0-cert.tmpl"
+dest = "/etc/apache2/mellon/auth0.cert"
 prefix = "/%%STACK%%/%%ENVIRONMENT%%"
-
 keys = [
-    "/config/okta"
+    "/config/auth0"
 ]
 
 reload_cmd = "/usr/sbin/apachectl graceful"
