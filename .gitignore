@@ -12,3 +12,6 @@ nubis/terraform/.terraform
 nubis/terraform/terraform.tfvars
 nubis/builder/artifacts/*-dev/
 nubis/builder/artifacts/AMIs.json
+
+# do not track aws pem file
+ec2_amazon-ebs-ubuntu.pem

@@ -34,6 +34,7 @@ apache::vhost { $project_name:
 
     wsgi_process_group          => $project_name,
     wsgi_script_aliases         => { '/' => "/var/www/${project_name}/iplimit.wsgi" },
+    wsgi_daemon_process         => 'wsgi',
     wsgi_daemon_process_options => {
       processes        => 1,
       threads          => 1,
@@ -68,8 +69,8 @@ apache::vhost { $project_name:
 
         #XXX: Module doesn't support these yet
         custom_fragment            => "
-          MellonSecureCookie On
-          MellonSubjectConfirmationDataAddressCheck Off
+    MellonSecureCookie On
+    MellonSubjectConfirmationDataAddressCheck Off
         ",
       },
       {
