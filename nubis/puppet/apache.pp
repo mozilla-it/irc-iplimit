@@ -4,7 +4,25 @@ class { 'nubis_apache':
 # Add modules
 class { 'apache::mod::rewrite': }
 class { 'apache::mod::wsgi': }
-class { 'apache::mod::auth_mellon': }
+
+class { 'apache::mod::auth_mellon':
+  require => [
+    Package['liblasso3'],
+  ],
+}
+
+class { 'apt': }
+
+# Include Houzafa Abbasbhay's PPA repo
+apt::ppa { 'ppa:houzefa-abba/lasso': }
+
+# Install newer liblasso than 2.4.0 to work around a known issue
+package { 'liblasso3':
+  ensure => '2.5.1-1~eob80+1+~ubuntu14.04~xcg.ppa1',
+  require => [
+    Apt::Ppa['ppa:houzefa-abba/lasso'],
+  ],
+}
 
 file { '/etc/apache2/mellon':
   ensure => directory,
