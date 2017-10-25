@@ -119,7 +119,7 @@ apache::vhost { $project_name:
       },
     ],
 
-    log_level          => 'debug',
+    log_level          => 'trace3',
     access_log_env_var => '!internal',
     access_log_format  => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
     custom_fragment    => "
