@@ -4,6 +4,7 @@ class { 'nubis_apache':
 # Add modules
 class { 'apache::mod::rewrite': }
 class { 'apache::mod::wsgi': }
+class { 'apache::mod::authz_core': }
 
 class { 'apache::mod::auth_mellon':
   require => [
