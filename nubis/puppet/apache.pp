@@ -98,14 +98,6 @@ apache::vhost { $project_name:
         mellon_enable => 'off',
       },
       {
-        path          => '/server-status',
-        provider      => 'location',
-        auth_type     => 'None',
-        mellon_enable => 'off',
-        order         => 'allow,deny',
-        allow         => 'from 127.0.0.1',
-      },
-      {
         path     => '/mellon',
         provider => 'location',
   auth_type      => 'None',
