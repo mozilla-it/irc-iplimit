@@ -102,8 +102,8 @@ apache::vhost { $project_name:
         provider      => 'location',
         auth_type     => 'None',
         mellon_enable => 'off',
-        order         => 'allow, deny',
-        allow         => 'from 127.0.0.1'
+        order         => 'allow,deny',
+        allow         => 'from 127.0.0.1',
       },
       {
         path     => '/mellon',
