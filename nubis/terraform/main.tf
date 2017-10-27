@@ -26,12 +26,13 @@ module "database" {
 }
 
 module "load_balancer" {
-  source              = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
-  region              = "${var.region}"
-  environment         = "${var.environment}"
-  account             = "${var.account}"
-  service_name        = "${var.service_name}"
-  health_check_target = "HTTP:80/health"
+  source               = "github.com/nubisproject/nubis-terraform//load_balancer?ref=v2.0.1"
+  region               = "${var.region}"
+  environment          = "${var.environment}"
+  account              = "${var.account}"
+  service_name         = "${var.service_name}"
+  health_check_target  = "HTTP:80/health"
+  ssl_cert_name_prefix = "${var.service_name}"
 }
 
 module "dns" {
