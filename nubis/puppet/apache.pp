@@ -18,7 +18,7 @@ apt::ppa { 'ppa:houzefa-abba/lasso': }
 
 # Install newer liblasso than 2.4.0 to work around a known issue
 package { 'liblasso3':
-  ensure => '2.5.1-1~eob80+1+~ubuntu14.04~xcg.ppa1',
+  ensure  => '2.5.1-1~eob80+1+~ubuntu14.04~xcg.ppa1',
   require => [
     Apt::Ppa['ppa:houzefa-abba/lasso'],
   ],
@@ -113,9 +113,9 @@ apache::vhost { $project_name:
       },
     ],
 
-    access_log_env_var => '!internal',
-    access_log_format  => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
-    custom_fragment    => "
+    access_log_env_var          => '!internal',
+    access_log_format           => '%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-agent}i\"',
+    custom_fragment             => "
     # Don't set default expiry on anything
     ExpiresActive Off
 ",
