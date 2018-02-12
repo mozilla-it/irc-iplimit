@@ -29,12 +29,3 @@ variable "nubis_sudo_groups" {
 variable "nubis_user_groups" {
   default = ""
 }
-
-variable "server_name_suffix" {
-  type = "map"
-
-  default = {
-    stage = "allizom.org"
-    prod  = "mozilla.org"
-  }
-}
