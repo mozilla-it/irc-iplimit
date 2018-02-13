@@ -1,4 +1,5 @@
 class { 'nubis_apache':
+  check_url => '/health',
 }
 
 # Add modules
@@ -34,7 +35,7 @@ apache::vhost { $project_name:
     aliases                     => [
       {
         alias => '/health',
-        path  => '/var/run/motd.dynamic',
+        path  => "/var/www/${project_name}/README.md",
       }
     ],
     custom_fragment             => "
