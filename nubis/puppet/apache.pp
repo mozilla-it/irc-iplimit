@@ -28,7 +28,6 @@ apache::vhost { $project_name:
       threads          => 1,
       maximum-requests => 200,
       display-name     => $project_name,
-      python-path      => "/var/www/${project_name}",
       home             => "/var/www/${project_name}",
     },
 
